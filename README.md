@@ -1,5 +1,5 @@
 # words-game
-Words Game writted in Javascript
+:newspaper: Words Game writted in Javascript
 
 ### [Demo](https://sergiss.github.io/words-game/)
 
