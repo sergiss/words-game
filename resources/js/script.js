@@ -123,7 +123,7 @@ const newGame = ()=> {
     // Generate new word
     currentWord = getRandomWord(data);
     gameOver = false;
-    console.log(currentWord);
+    // console.log(currentWord);
 }
 
 /* Attempts to find the word */
