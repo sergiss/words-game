@@ -1,76 +1,90 @@
 * {
-    font-family: monospace, Arial, Helvetica, sans-serif;
-    text-transform: uppercase;
+  font-family: monospace, Arial, Helvetica, sans-serif;
+  text-transform: uppercase;
 }
 
 h1 {
-    font-family: Arial, Helvetica, sans-serif;
-    margin-bottom: 5px;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-bottom: 5px;
 }
 
-html, body {
-    height: 100%;
+html,
+body {
+  height: 100%;
 }
 
 body {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .board {
-    margin: 20px;
-    max-width: 400px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  margin: 20px;
+  max-width: 400px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .word {
-    width: 100%;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
-    margin: 5px;
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin: 5px;
 }
 
 .letter {
-    width: 100%;
-    font-size: 2rem;
-    font-weight: bold;
-    text-align: center;
-    box-sizing: border-box;
-    border-radius: 5px;
+  width: 100%;
+  font-size: 2rem;
+  font-weight: bold;
+  text-align: center;
+  box-sizing: border-box;
+  border-radius: 5px;
 }
 
 .check-btn {
-    margin: 5px;
-    font-size: 1.3rem;
-    border-radius: 5px;
-    width: 100%;
-    height: 50px;
+  margin: 5px;
+  font-size: 1.3rem;
+  border-radius: 5px;
+  width: 100%;
+  height: 50px;
 }
 
 .info {
-    border-radius: 5px;
-    line-height: 30px;
-    text-align: center;
-    width: 100%;
-    font-weight: bold;
+  border-radius: 5px;
+  line-height: 30px;
+  text-align: center;
+  width: 100%;
+  font-weight: bold;
 }
 
-.ok {   
-    background-color: #8dc287;
-    border: 2px solid green;
+.ok {
+  background-color: #8dc287;
+  border: 2px solid green;
 }
 
 .nok {
-    background-color: #ff6c70;
-    border: 2px solid red;
+  background-color: #ff6c70;
+  border: 2px solid red;
 }
 
 .hide {
-    display: none;
+  display: none;
+}
+
+a {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
 }
