@@ -12,7 +12,7 @@ const loadTextFile = async (src, callback)=> {
     callback(text);    
 }
 
-loadTextFile("/resources/data/data.txt", (text) => {
+loadTextFile("resources/data/data.txt", (text) => {
     data = text.split(/\r?\n/); // Split words array
     set = new Set(data);
 
