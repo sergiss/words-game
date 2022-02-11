@@ -84,7 +84,6 @@ const newGame = () => {
   clear();
   // Generate new word
   currentWord = getRandomWord(data);
-  console.log(currentWord)
   gameOver = false;
   // console.log(currentWord);
 };
