@@ -6,6 +6,7 @@
 h1 {
   font-family: Arial, Helvetica, sans-serif;
   margin-bottom: 5px;
+  margin-top: 0;
 }
 
 html,
@@ -87,4 +88,23 @@ a:link {
 
 a:visited {
   text-decoration: none;
+}
+
+.flags {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  margin: 0;
+}
+
+.flags > img {
+  padding: 2px;
+  box-sizing: border-box;
+  width: 32px;
+  height: auto;
+}
+
+.select {
+  border: 1.5px solid gray;
+  border-radius: 5px;
 }

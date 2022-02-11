@@ -12,64 +12,6 @@ const loadTextFile = async (src, callback)=> {
     callback(text);    
 }
 
-loadTextFile("resources/data/data-es.txt", (text) => {
-    data = text.split(/\r?\n/); // Split words array
-    set = new Set(data);
-
-    // Initialize inputs
-    for(let i = 0; i < 5; ++i) {
-        const word = document.querySelector(`#w${i}`);
-        const tmp = word.querySelectorAll("input"); 
-        for(let j = 0; j < 5; ++j) {
-            tmp[j].addEventListener("keyup", ()=> {
-                if(tmp[j].value.trim().length > 0) {
-                    tmp[(j + 1) % 5].focus();
-                }                
-            })
-        }
-        words.push(tmp);
-    }
-
-    // Check button
-    const checkBtn = document.querySelector("#check-btn");
-    checkBtn.addEventListener("click", (e)=> {
-        if(gameOver) {
-            newGame();
-        } else {
-
-            hideMessage();
-
-            // Check dictionary
-            const word = getTry(currentIndex);
-            if(word.trim().length === 0 || !set.has(word)) {
-                const text = "The word is not in the dictionary"
-                showMessage(text, true);
-                setTimeout(()=> {
-                    if(document.querySelector("#info").innerText === text.toUpperCase()) {
-                        hideMessage();
-                    }
-                }, 2500);                
-                return;
-            } 
-
-            const state = checkWord(currentIndex);
-            if(state) { // Correct Word (WIN)
-                showMessage("You win!");
-                gameOver = true;
-                checkBtn.value = "New Game";
-            } else if(currentIndex == 4) { // Game Over
-                showMessage(`Game Over! (${currentWord})`, true);
-                gameOver = true;
-                checkBtn.value = "New Game";
-            } else {
-                setCurrentIndex(currentIndex + 1);
-            }  
-        }     
-    });
-
-    newGame();
-});
-
 const getTry = (index) => {
     let result = "";
     for(let i = 0; i < 5; ++i) {
@@ -108,21 +50,30 @@ const checkWord = (index) => {
     for(let i = 0; i < 5; i++) { // Iterate word
        if(currentWord.charAt(i) === word[i].value.toUpperCase()) { // Correct letter
          word[i].style.background = "#8dc287";
-         flags[i] = true;
+         flags[i] = true; // ok
        }
     }
+
+    const m = {};
+
     outter : for(let indices, i = 0; i < 5; i++) {
         if(!flags[i]) {
             correct = false;
+            flags[i] = true;
+
             indices = indicesOf(currentWord, word[i].value.toUpperCase());
+           
             for(let j = 0; j < indices.length; ++j) {
-                let idx = indices[j];
-                if(!flags[idx]) {                        
-                    word[i].style.background = "#ffc40d";
-                    flags[index] = true;
+                
+                let idx = index[j];
+                if(!flags[idx] && !m[idx]) {
+                    m[idx] = true;
+                    word[i].style.background = "#ffc40d";  ;
                     continue outter;
                 }
+
             }
+
             // Incorrect word
             word[i].style.background = "#ff6c70";
         }
@@ -167,3 +118,87 @@ const clear = () => {
 const getRandomWord = (data)=> {
     return data[Math.floor(data.length * Math.random())];
 }
+
+const initialize = (lang) => {
+
+    window.localStorage.setItem("lang", `${lang}`);
+
+    loadTextFile(`resources/data/data-${lang}.txt`, (text) => {
+        data = text.split(/\r?\n/); // Split words array
+        set = new Set(data);
+
+        if(words.length === 0) {
+        
+            // Initialize inputs
+            for(let i = 0; i < 5; ++i) {
+                const word = document.querySelector(`#w${i}`);
+                const tmp = word.querySelectorAll("input"); 
+                for(let j = 0; j < 5; ++j) {
+                    tmp[j].addEventListener("keyup", ()=> {
+                        if(tmp[j].value.trim().length > 0) {
+                            tmp[(j + 1) % 5].focus();
+                        }                
+                    })
+                }
+                words.push(tmp);
+            }
+        
+            // Check button
+            const checkBtn = document.querySelector("#check-btn");
+            checkBtn.addEventListener("click", (e)=> {
+                if(gameOver) {
+                    newGame();
+                } else {
+        
+                    hideMessage();
+        
+                    // Check dictionary
+                    const word = getTry(currentIndex);
+                    if(word.trim().length === 0 || !set.has(word)) {
+                        const text = "The word is not in the dictionary"
+                        showMessage(text, true);
+                        setTimeout(()=> {
+                            if(document.querySelector("#info").innerText === text.toUpperCase()) {
+                                hideMessage();
+                            }
+                        }, 2500);                
+                        return;
+                    } 
+        
+                    const state = checkWord(currentIndex);
+                    if(state) { // Correct Word (WIN)
+                        showMessage("You win!");
+                        gameOver = true;
+                        checkBtn.value = "New Game";
+                    } else if(currentIndex == 4) { // Game Over
+                        showMessage(`Game Over! (${currentWord})`, true);
+                        gameOver = true;
+                        checkBtn.value = "New Game";
+                    } else {
+                        setCurrentIndex(currentIndex + 1);
+                    }  
+                }     
+            });
+
+        }
+    
+        newGame();
+    });    
+
+}
+
+const langEvent = (e) => {
+    [...document.querySelectorAll(".flags > img")].map((el) => {
+        el.classList.remove("select");
+    })
+    e.target.classList.add("select");
+
+    initialize(e.target.id);
+    
+}
+
+document.querySelector("#en").addEventListener("click", langEvent);
+document.querySelector("#es").addEventListener("click", langEvent);
+document.querySelector("#cat").addEventListener("click", langEvent);
+
+document.querySelector(`#${window.localStorage.getItem("lang") || 'en'}`).click();
