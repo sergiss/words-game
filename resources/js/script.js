@@ -44,6 +44,7 @@ const indicesOf = (value, tgt)=> {
 }
 
 const checkWord = (index) => {
+
     const flags = [];
     const word = words[index];
     var correct = true;
@@ -63,21 +64,20 @@ const checkWord = (index) => {
 
             indices = indicesOf(currentWord, word[i].value.toUpperCase());
            
-            for(let j = 0; j < indices.length; ++j) {
-                
-                let idx = index[j];
+            for(let j = 0; j < indices.length; ++j) { 
+                let idx = indices[j];
                 if(!flags[idx] && !m[idx]) {
                     m[idx] = true;
-                    word[i].style.background = "#ffc40d";  ;
+                    word[i].style.background = "#ffc40d";
                     continue outter;
                 }
-
             }
 
             // Incorrect word
             word[i].style.background = "#ff6c70";
         }
     }
+
     return correct;
 }
 
@@ -102,7 +102,7 @@ const setCurrentIndex = (index) => {
 }
 
 /* Clear board */
-const clear = () => {  
+const clear = () => {
     document.querySelector("#check-btn").value = "Check";  
     hideMessage();
     for(let i = 0; i < 5; ++i) {
@@ -116,6 +116,7 @@ const clear = () => {
 
 /* Return random word */
 const getRandomWord = (data)=> {
+    //return "AMALA";
     return data[Math.floor(data.length * Math.random())];
 }
 
@@ -192,9 +193,7 @@ const langEvent = (e) => {
         el.classList.remove("select");
     })
     e.target.classList.add("select");
-
     initialize(e.target.id);
-    
 }
 
 document.querySelector("#en").addEventListener("click", langEvent);
