@@ -12,7 +12,7 @@ const loadTextFile = async (src, callback)=> {
     callback(text);    
 }
 
-loadTextFile("resources/data/data.txt", (text) => {
+loadTextFile("resources/data/data-es.txt", (text) => {
     data = text.split(/\r?\n/); // Split words array
     set = new Set(data);
 
@@ -85,34 +85,47 @@ const showMessage = (text, nok = false)=> {
     info.classList.add(nok ? "nok" : "ok");
 }
 
- const hideMessage = ()=> {
+const hideMessage = ()=> {
     const info = document.querySelector("#info");
     info.innerText = info.className = "";
     info.classList.add("hide");
- }
+}
+
+const indicesOf = (value, tgt)=> {
+    const result = [];
+    for(let i = 0; i < value.length; ++i) {
+        if(value[i] === tgt) {
+            result.push(i);
+        }
+    }
+    return result;
+}
 
 const checkWord = (index) => {
     const flags = [];
     const word = words[index];
     var correct = true;
-    for(let index, i = 0; i < 5; i++) { // Iterate word
+    for(let i = 0; i < 5; i++) { // Iterate word
        if(currentWord.charAt(i) === word[i].value.toUpperCase()) { // Correct letter
          word[i].style.background = "#8dc287";
          flags[i] = true;
-       } else { // handle error
-         correct = false;
-         index = currentWord.indexOf(word[i].value.toUpperCase());
-         // Check if the letter is in the word
-         if(word[i].value.trim().length > 0 
-         && index > -1 
-         && !flags[index]
-         && currentWord.charAt(index) !== word[index].value.toUpperCase()) {
-            flags[index] = true;
-            word[i].style.background = "#ffc40d";
-         } else { // Incorrect word
-            word[i].style.background = "#ff6c70";
-         }
        }
+    }
+    outter : for(let indices, i = 0; i < 5; i++) {
+        if(!flags[i]) {
+            correct = false;
+            indices = indicesOf(currentWord, word[i].value.toUpperCase());
+            for(let j = 0; j < indices.length; ++j) {
+                let idx = indices[j];
+                if(!flags[idx]) {                        
+                    word[i].style.background = "#ffc40d";
+                    flags[index] = true;
+                    continue outter;
+                }
+            }
+            // Incorrect word
+            word[i].style.background = "#ff6c70";
+        }
     }
     return correct;
 }
@@ -153,14 +166,4 @@ const clear = () => {
 /* Return random word */
 const getRandomWord = (data)=> {
     return data[Math.floor(data.length * Math.random())];
-}
-
-function download(filename, text) {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);  
-    element.style.display = 'none';
-    document.body.appendChild(element);  
-    element.click();  
-    document.body.removeChild(element);
 }
