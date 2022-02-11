@@ -45,40 +45,45 @@ const indicesOf = (value, tgt)=> {
 
 const checkWord = (index) => {
 
-    const flags = [];
+    const flags = {};
     const word = words[index];
+    
     var correct = true;
+   
     for(let i = 0; i < 5; i++) { // Iterate word
+       flags[i] = {}
        if(currentWord.charAt(i) === word[i].value.toUpperCase()) { // Correct letter
          word[i].style.background = "#8dc287";
-         flags[i] = true; // ok
+         flags[i].iterated = true;
+       } else {
+           correct = false;
        }
     }
 
-    const m = {};
-
-    outter : for(let indices, i = 0; i < 5; i++) {
-        if(!flags[i]) {
-            correct = false;
-            flags[i] = true;
-
-            indices = indicesOf(currentWord, word[i].value.toUpperCase());
-           
-            for(let j = 0; j < indices.length; ++j) { 
-                let idx = indices[j];
-                if(!flags[idx] && !m[idx]) {
-                    m[idx] = true;
-                    word[i].style.background = "#ffc40d";
-                    continue outter;
+    if(!correct) {
+        outter : for(let indices, i = 0; i < 5; i++) {
+       
+            if(!flags[i].iterated) {
+                flags[i].iterated = true;
+    
+                indices = indicesOf(currentWord, word[i].value.toUpperCase());
+                for(let j = 0; j < indices.length; ++j) { 
+                    let idx = indices[j];         
+                    if(!flags[idx].found) {
+                        flags[idx].found = true;                      
+                        word[i].style.background = "#ffc40d";
+                        continue outter;                   
+                    }
                 }
+    
+                // Incorrect word
+                word[i].style.background = "#ff6c70";
             }
-
-            // Incorrect word
-            word[i].style.background = "#ff6c70";
         }
+        return false;
     }
 
-    return correct;
+    return true;
 }
 
 const newGame = ()=> {
@@ -116,8 +121,7 @@ const clear = () => {
 
 /* Return random word */
 const getRandomWord = (data)=> {
-    //return "AMALA";
-    return data[Math.floor(data.length * Math.random())];
+   return data[Math.floor(data.length * Math.random())];
 }
 
 const initialize = (lang) => {
