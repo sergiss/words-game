@@ -1,0 +1,8 @@
+{
+    "title": "WORDS GAME",
+    "invalid-word": "The word is not in the dictionary",
+    "check": "Check",
+    "you-win": "You win!",
+    "new-game": "New Game",
+    "game-over": "Game Over!"
+}

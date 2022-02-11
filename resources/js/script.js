@@ -3,14 +3,9 @@ var data, set;
 var currentWord;
 var currentIndex;
 var gameOver;
+var stringMap;
 
 const words = [];
-
-const loadTextFile = async (src, callback) => {
-  const response = await fetch(src);
-  const text = await response.text();
-  callback(text);
-};
 
 const getTry = (index) => {
   let result = "";
@@ -106,7 +101,7 @@ const setCurrentIndex = (index) => {
 
 /* Clear board */
 const clear = () => {
-  document.querySelector("#check-btn").value = "Check";
+  document.querySelector("#check-btn").value = stringMap["check"];
   hideMessage();
   for (let i = 0; i < 5; ++i) {
     for (let j = 0; j < 5; ++j) {
@@ -122,69 +117,22 @@ const getRandomWord = (data) => {
   return data[Math.floor(data.length * Math.random())];
 };
 
-const initialize = (lang) => {
+const initialize = async (lang) => {
+
   window.localStorage.setItem("lang", `${lang}`);
+  var response = await fetch(`resources/locale/info-${lang}.json`);
+  stringMap = await response.json();
 
-  loadTextFile(`resources/data/data-${lang}.txt`, (text) => {
-    data = text.split(/\r?\n/); // Split words array
-    set = new Set(data);
+  response = await fetch(`resources/locale/data-${lang}.txt`);
+  const text = await response.text();
 
-    if (words.length === 0) {
-      // Initialize inputs
-      for (let i = 0; i < 5; ++i) {
-        const word = document.querySelector(`#w${i}`);
-        const tmp = word.querySelectorAll("input");
-        for (let j = 0; j < 5; ++j) {
-          tmp[j].addEventListener("keyup", () => {
-            if (tmp[j].value.trim().length > 0) {
-              tmp[(j + 1) % 5].focus();
-            }
-          });
-        }
-        words.push(tmp);
-      }
+  data = text.split(/\r?\n/); // Split words array
+  set = new Set(data);
 
-      // Check button
-      const checkBtn = document.querySelector("#check-btn");
-      checkBtn.addEventListener("click", (e) => {
-        if (gameOver) {
-          newGame();
-        } else {            
-          hideMessage();
+  document.querySelector("#title").innerText = stringMap["title"];
 
-          // Check dictionary
-          const word = getTry(currentIndex);
-          if (word.trim().length === 0 || !set.has(word)) {
-            const text = "The word is not in the dictionary";
-            showMessage(text, true);
-            setTimeout(() => {
-              if (document.querySelector("#info").innerText === text.toUpperCase()) {
-                hideMessage();
-              }
-            }, 2500);
-            return;
-          }
-
-          const state = checkWord(currentIndex);
-          if (state) {
-            // Correct Word (WIN)
-            showMessage("You win!");
-            gameOver = true;
-            checkBtn.value = "New Game";
-          } else if (currentIndex == 4) {
-            // Game Over
-            showMessage(`Game Over! (${currentWord})`, true);
-            gameOver = true;
-            checkBtn.value = "New Game";
-          } else {
-            setCurrentIndex(currentIndex + 1);
-          }
-        }
-      });
-    }
-
-    newGame();
-  });
+  newGame();
+  
 };
 
 const langEvent = (e) => {
@@ -192,8 +140,65 @@ const langEvent = (e) => {
     el.classList.remove("select");
   });
   e.target.classList.add("select");
+
   initialize(e.target.id);
 };
+
+// Check button
+const checkBtn = document.querySelector("#check-btn");
+checkBtn.addEventListener("click", (e) => {
+
+  if (gameOver) {
+
+    newGame();
+
+  } else {       
+
+    hideMessage();
+
+    // Check dictionary
+    const word = getTry(currentIndex);
+    if (word.trim().length === 0 || !set.has(word)) {
+      const text = stringMap["invalid-word"];
+      showMessage(text, true);
+      setTimeout(() => {
+        if (document.querySelector("#info").innerText === text.toUpperCase()) {
+          hideMessage();
+        }
+      }, 2500);
+      return;
+    }
+
+    const state = checkWord(currentIndex);
+    if (state) {
+      // Correct Word (WIN)
+      showMessage(stringMap["you-win"]);
+      gameOver = true;
+      checkBtn.value = stringMap["new-game"];
+    } else if (currentIndex == 4) {
+      // Game Over
+      showMessage(`${stringMap["game-over"]} (${currentWord})`, true);
+      gameOver = true;
+      checkBtn.value = stringMap["new-game"];
+    } else {
+      setCurrentIndex(currentIndex + 1);
+    }
+  }
+});
+
+// Initialize inputs
+for (let i = 0; i < 5; ++i) {
+  const word = document.querySelector(`#w${i}`);
+  const tmp = word.querySelectorAll("input");
+  for (let j = 0; j < 5; ++j) {
+    tmp[j].addEventListener("keyup", () => {
+      if (tmp[j].value.trim().length > 0) {
+        tmp[(j + 1) % 5].focus();
+      }
+    });
+  }
+  words.push(tmp);
+}
 
 document.querySelector("#en").addEventListener("click", langEvent);
 document.querySelector("#es").addEventListener("click", langEvent);
