@@ -1,3 +1,7 @@
+/* 
+ 2022 - Sergio S.
+ https://github.com/sergiss
+*/
 var data, set;
 
 var currentWord;
