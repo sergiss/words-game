@@ -8,6 +8,7 @@ var currentWord;
 var currentIndex;
 var gameOver;
 var stringMap;
+var focusEnabled = false;
 
 const words = [];
 
@@ -100,7 +101,8 @@ const setCurrentIndex = (index) => {
       words[i][j].disabled = i !== index ? true : false;
     }
   }
-  words[index][0].focus();
+  // Focus first input
+  if (focusEnabled) words[index][0].focus();
 };
 
 /* Clear board */
@@ -195,6 +197,11 @@ for (let i = 0; i < 5; ++i) {
   const word = document.querySelector(`#w${i}`);
   const tmp = word.querySelectorAll("input");
   for (let j = 0; j < 5; ++j) {
+    // Mouse click listener
+    tmp[j].addEventListener("click", () => {
+      focusEnabled = true;
+    });
+    // Keyup listener
     tmp[j].addEventListener("keyup", () => {
       if (tmp[j].value.trim().length > 0) {
         tmp[(j + 1) % 5].focus();
